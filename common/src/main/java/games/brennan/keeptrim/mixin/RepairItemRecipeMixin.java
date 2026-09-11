@@ -16,7 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * Vanilla's crafting-grid repair builds a fresh {@link ItemStack} and only carries over
  * durability and curses, so an armor trim is silently lost. This re-applies the trim of
  * the left-most (then top-most) input to the assembled result. If that input carries no
- * trim, the other input's trim is used instead so a trim is never dropped outright.
+ * trim the result stays untrimmed, exactly as vanilla built it — the other input's trim
+ * is deliberately NOT used.
  */
 @Mixin(RepairItemRecipe.class)
 public abstract class RepairItemRecipeMixin {
@@ -35,19 +36,10 @@ public abstract class RepairItemRecipeMixin {
         }
     }
 
-    /** Priority input's trim, falling back to any other trimmed input; null if none. */
+    /** The priority (left-most, then top-most) input's trim; null if it has none. */
     private static ArmorTrim keeptrim$pickTrim(CraftingInput input) {
         int priority = RepairTrimPicker.pickIndex(input.width(), input.height(),
             i -> !input.getItem(i).isEmpty());
-        if (priority == RepairTrimPicker.NONE) {
-            return null;
-        }
-        ArmorTrim trim = input.getItem(priority).get(DataComponents.TRIM);
-        if (trim != null) {
-            return trim;
-        }
-        int fallback = RepairTrimPicker.pickIndex(input.width(), input.height(),
-            i -> i != priority && input.getItem(i).has(DataComponents.TRIM));
-        return fallback == RepairTrimPicker.NONE ? null : input.getItem(fallback).get(DataComponents.TRIM);
+        return priority == RepairTrimPicker.NONE ? null : input.getItem(priority).get(DataComponents.TRIM);
     }
 }

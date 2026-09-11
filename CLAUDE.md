@@ -19,8 +19,8 @@ Sibling mod of the Dungeon Train family (AIN / AIS / PlayerMob / ECP / TE / **Ke
 
 Vanilla's crafting-grid repair (`RepairItemRecipe.assemble`) builds a fresh stack and
 keeps only durability + curses, so an armor trim is lost. Keep Trim re-applies the trim of
-the **left-most, then top-most** input to the result; if that input has no trim the other
-input's trim is used. The anvil already keeps the left item's trim (result = copy of left)
+the **left-most, then top-most** input to the result; if that input has no trim the result
+stays untrimmed (the other input's trim is never used). The anvil already keeps the left item's trim (result = copy of left)
 and is deliberately untouched.
 
 ## Structure

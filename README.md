@@ -11,8 +11,8 @@ trimmed. Keep Trim carries the trim over: the result keeps the trim of the
 ## Rules
 
 - Left-most input wins; same column → top-most wins.
-- If the winning piece has no trim but the other does, that trim is kept instead —
-  a trim is never dropped outright.
+- If the winning piece is untrimmed, the result is untrimmed — even when the other
+  piece has a trim. Put the trim you want to keep on the left.
 - Neither trimmed → vanilla result, untouched.
 - The anvil is not changed: vanilla already keeps the left item's trim there.
 
