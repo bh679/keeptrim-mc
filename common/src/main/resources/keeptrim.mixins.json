@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "games.brennan.keeptrim.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "RepairItemRecipeMixin"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

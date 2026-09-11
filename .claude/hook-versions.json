@@ -1,0 +1,12 @@
+{
+  "git/pre-bash.sh": {
+    "version": "1.1.0",
+    "installedAt": "2026-09-11T11:38:12Z",
+    "type": "symlinked"
+  },
+  "git/post-bash.sh": {
+    "version": "1.0.0",
+    "installedAt": "2026-09-11T11:38:12Z",
+    "type": "symlinked"
+  }
+}
