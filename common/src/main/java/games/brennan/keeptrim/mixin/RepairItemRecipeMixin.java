@@ -2,9 +2,9 @@ package games.brennan.keeptrim.mixin;
 
 import games.brennan.keeptrim.repair.RepairTrimPicker;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RepairItemRecipe;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Vanilla's crafting-grid repair builds a fresh {@link ItemStack} and only carries over
- * durability and curses, so an armor trim is silently lost. This re-applies the trim of
- * the left-most (then top-most) input to the assembled result. If that input carries no
- * trim the result stays untrimmed, exactly as vanilla built it — the other input's trim
- * is deliberately NOT used.
+ * durability and curses, so an armor trim and a leather dye are silently lost. This
+ * re-applies the trim and dye of the left-most (then top-most) input to the assembled
+ * result. Whatever that input lacks stays as vanilla built it — the other input's trim
+ * or dye is deliberately NOT used.
  */
 @Mixin(RepairItemRecipe.class)
 public abstract class RepairItemRecipeMixin {
@@ -30,16 +30,21 @@ public abstract class RepairItemRecipeMixin {
         if (result == null || result.isEmpty()) {
             return;
         }
-        ArmorTrim trim = keeptrim$pickTrim(input);
-        if (trim != null) {
-            result.set(DataComponents.TRIM, trim);
-        }
-    }
-
-    /** The priority (left-most, then top-most) input's trim; null if it has none. */
-    private static ArmorTrim keeptrim$pickTrim(CraftingInput input) {
         int priority = RepairTrimPicker.pickIndex(input.width(), input.height(),
             i -> !input.getItem(i).isEmpty());
-        return priority == RepairTrimPicker.NONE ? null : input.getItem(priority).get(DataComponents.TRIM);
+        if (priority == RepairTrimPicker.NONE) {
+            return;
+        }
+        ItemStack source = input.getItem(priority);
+        keeptrim$copy(source, result, DataComponents.TRIM);
+        keeptrim$copy(source, result, DataComponents.DYED_COLOR);
+    }
+
+    /** Copies one component from the priority input onto the result, if it has it. */
+    private static <T> void keeptrim$copy(ItemStack source, ItemStack result, DataComponentType<T> type) {
+        T value = source.get(type);
+        if (value != null) {
+            result.set(type, value);
+        }
     }
 }
